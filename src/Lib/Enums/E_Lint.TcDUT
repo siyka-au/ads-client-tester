@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <DUT Name="E_Lint" Id="{dbdfab39-b5c4-43d2-80a6-3102a8d14bec}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_Lint :
+(
+	eOptionA := 0,
+	eOptionB,
+	eOptionC
+) LINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

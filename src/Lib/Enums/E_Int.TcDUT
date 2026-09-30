@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <DUT Name="E_Int" Id="{06c73e96-77d3-4a54-8a2d-a71c97362de6}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_Int :
+(
+	eOptionA := 0,
+	eOptionB,
+	eOptionC
+) INT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

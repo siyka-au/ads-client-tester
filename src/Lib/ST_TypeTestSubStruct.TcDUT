@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <DUT Name="ST_TypeTestSubStruct" Id="{94550c1d-e111-423f-9df8-7eb41c4d9f3e}">
+    <Declaration><![CDATA[TYPE ST_TypeTestSubStruct :
+STRUCT
+	// Outputs
+	bBoolVar : BOOL;
+	nSintVar : SINT;
+	nUsintVar : USINT;
+	nByteVar : BYTE;
+	nIntVar : INT;
+	nUintVar : UINT;
+	nWordVar : WORD;
+	nDintVar : DINT;
+	nUdintVar : UDINT;
+	nDwordVar : DWORD;
+	nLintVar : LINT;
+	nUlintVar : ULINT;
+	nLwordVar : LWORD;
+	fRealVar : REAL;
+	fLrealVar : LREAL;
+	tTimeVar : TIME;
+	tdTimeOfDayVar : TOD;
+	dDateVar : DATE;
+	dtDateTimeVar : DT;
+	tLtimeVar : LTIME;
+	tdLTimeOfDayVar : LTOD;
+	dLDateVar : LDATE;
+	dtLDateTimeVar : LDT;
+	sStringVar : STRING(255);
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <POU Name="FB_BitPackingTest" Id="{a6bc5853-885c-4af3-a63d-71989381d060}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_BitPackingTest
+VAR
+	// Control (writable by Go test)
+	nSeed : ULINT := 0;
+	bAutoMode : BOOL := FALSE;
+	nAutoTickInterval : UDINT := 50;
+
+	// Outputs: bBitN = bit N of nSeed
+	stBitPacking : ST_BitPacking;
+
+	// Go-owned write target: the PLC never touches it
+	stBitPackingWrite : ST_BitPacking;
+
+	// Private
+	nTtickCounter : UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// -----------------------------------------------------------------------
+// Auto-increment mode: advance seed every auto_tick_interval cycles
+// -----------------------------------------------------------------------
+IF bAutoMode THEN
+	IF nTtickCounter >= nAutoTickInterval THEN
+		nSeed := nSeed + 1;
+		nTtickCounter := 0;
+	ELSE
+		nTtickCounter := nTtickCounter + 1;
+	END_IF
+END_IF
+
+// -----------------------------------------------------------------------
+// bBitN := bit N of nSeed
+// -----------------------------------------------------------------------
+stBitPacking.bBit0 := (SHR(nSeed, 0) AND 1) = 1;
+stBitPacking.bBit1 := (SHR(nSeed, 1) AND 1) = 1;
+stBitPacking.bBit2 := (SHR(nSeed, 2) AND 1) = 1;
+stBitPacking.bBit3 := (SHR(nSeed, 3) AND 1) = 1;
+stBitPacking.bBit4 := (SHR(nSeed, 4) AND 1) = 1;
+stBitPacking.bBit5 := (SHR(nSeed, 5) AND 1) = 1;
+stBitPacking.bBit6 := (SHR(nSeed, 6) AND 1) = 1;
+stBitPacking.bBit7 := (SHR(nSeed, 7) AND 1) = 1;
+stBitPacking.bBit8 := (SHR(nSeed, 8) AND 1) = 1;
+stBitPacking.bBit9 := (SHR(nSeed, 9) AND 1) = 1;
+stBitPacking.bBit10 := (SHR(nSeed, 10) AND 1) = 1;
+stBitPacking.bBit11 := (SHR(nSeed, 11) AND 1) = 1;
+stBitPacking.bBit12 := (SHR(nSeed, 12) AND 1) = 1;
+stBitPacking.bBit13 := (SHR(nSeed, 13) AND 1) = 1;
+stBitPacking.bBit14 := (SHR(nSeed, 14) AND 1) = 1;
+stBitPacking.bBit15 := (SHR(nSeed, 15) AND 1) = 1;
+stBitPacking.bBit16 := (SHR(nSeed, 16) AND 1) = 1;
+stBitPacking.bBit17 := (SHR(nSeed, 17) AND 1) = 1;
+stBitPacking.bBit18 := (SHR(nSeed, 18) AND 1) = 1;
+stBitPacking.bBit19 := (SHR(nSeed, 19) AND 1) = 1;
+stBitPacking.bBit20 := (SHR(nSeed, 20) AND 1) = 1;
+stBitPacking.bBit21 := (SHR(nSeed, 21) AND 1) = 1;
+stBitPacking.bBit22 := (SHR(nSeed, 22) AND 1) = 1;
+stBitPacking.bBit23 := (SHR(nSeed, 23) AND 1) = 1;
+stBitPacking.bBit24 := (SHR(nSeed, 24) AND 1) = 1;
+stBitPacking.bBit25 := (SHR(nSeed, 25) AND 1) = 1;
+stBitPacking.bBit26 := (SHR(nSeed, 26) AND 1) = 1;
+stBitPacking.bBit27 := (SHR(nSeed, 27) AND 1) = 1;
+stBitPacking.bBit28 := (SHR(nSeed, 28) AND 1) = 1;
+stBitPacking.bBit29 := (SHR(nSeed, 29) AND 1) = 1;
+stBitPacking.bBit30 := (SHR(nSeed, 30) AND 1) = 1;
+stBitPacking.bBit31 := (SHR(nSeed, 31) AND 1) = 1;
+stBitPacking.bBit32 := (SHR(nSeed, 32) AND 1) = 1;
+stBitPacking.bBit33 := (SHR(nSeed, 33) AND 1) = 1;
+stBitPacking.bBit34 := (SHR(nSeed, 34) AND 1) = 1;
+stBitPacking.bBit35 := (SHR(nSeed, 35) AND 1) = 1;
+stBitPacking.bBit36 := (SHR(nSeed, 36) AND 1) = 1;
+stBitPacking.bBit37 := (SHR(nSeed, 37) AND 1) = 1;
+stBitPacking.bBit38 := (SHR(nSeed, 38) AND 1) = 1;
+stBitPacking.bBit39 := (SHR(nSeed, 39) AND 1) = 1;
+stBitPacking.bBit40 := (SHR(nSeed, 40) AND 1) = 1;
+stBitPacking.bBit41 := (SHR(nSeed, 41) AND 1) = 1;
+stBitPacking.bBit42 := (SHR(nSeed, 42) AND 1) = 1;
+stBitPacking.bBit43 := (SHR(nSeed, 43) AND 1) = 1;
+stBitPacking.bBit44 := (SHR(nSeed, 44) AND 1) = 1;
+stBitPacking.bBit45 := (SHR(nSeed, 45) AND 1) = 1;
+stBitPacking.bBit46 := (SHR(nSeed, 46) AND 1) = 1;
+stBitPacking.bBit47 := (SHR(nSeed, 47) AND 1) = 1;
+stBitPacking.bBit48 := (SHR(nSeed, 48) AND 1) = 1;
+stBitPacking.bBit49 := (SHR(nSeed, 49) AND 1) = 1;
+stBitPacking.bBit50 := (SHR(nSeed, 50) AND 1) = 1;
+stBitPacking.bBit51 := (SHR(nSeed, 51) AND 1) = 1;
+stBitPacking.bBit52 := (SHR(nSeed, 52) AND 1) = 1;
+stBitPacking.bBit53 := (SHR(nSeed, 53) AND 1) = 1;
+stBitPacking.bBit54 := (SHR(nSeed, 54) AND 1) = 1;
+stBitPacking.bBit55 := (SHR(nSeed, 55) AND 1) = 1;
+stBitPacking.bBit56 := (SHR(nSeed, 56) AND 1) = 1;
+stBitPacking.bBit57 := (SHR(nSeed, 57) AND 1) = 1;
+stBitPacking.bBit58 := (SHR(nSeed, 58) AND 1) = 1;
+stBitPacking.bBit59 := (SHR(nSeed, 59) AND 1) = 1;
+stBitPacking.bBit60 := (SHR(nSeed, 60) AND 1) = 1;
+stBitPacking.bBit61 := (SHR(nSeed, 61) AND 1) = 1;
+stBitPacking.bBit62 := (SHR(nSeed, 62) AND 1) = 1;
+stBitPacking.bBit63 := (SHR(nSeed, 63) AND 1) = 1;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

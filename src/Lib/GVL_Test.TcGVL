@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <GVL Name="GVL_Test" Id="{0cbe4087-ce52-4786-91e6-f79b3c524118}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	bBoolVar : BOOL;
+	nSintVar : SINT;
+	nUsintVar : USINT;
+	nByteVar : BYTE;
+	nIntVar : INT;
+	nUintVar : UINT;
+	nWordVar : WORD;
+	nDintVar : DINT;
+	nUdintVar : UDINT;
+	nDwordVar : DWORD;
+	nLintVar : LINT;
+	nUlintVar : ULINT;
+	nLwordVar : LWORD;
+	fRealVar : REAL;
+	fLrealVar : LREAL;
+	tTimeVar : TIME;
+	tdTimeOfDayVar : TOD;
+	dDateVar : DATE;
+	dtDateTimeVar : DT;
+	tLtimeVar : LTIME;
+	tdLTimeOfDayVar : LTOD;
+	dLDateVar : LDATE;
+	dtLDateTimeVar : LDT;
+	sStringVar : STRING(255);
+	stStructVar : ST_TypeTestStruct;
+	aIntArray : ARRAY[0..9] OF INT;
+	aDintArray : ARRAY[0..9] OF DINT;
+	aIntArray2d : ARRAY[0..2, 0..2] OF INT;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

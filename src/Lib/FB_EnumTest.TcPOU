@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <POU Name="FB_EnumTest" Id="{df109b34-e749-4a3e-92d4-f8bf03f5c727}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EnumTest
+VAR
+	// Control (writable by Go test)
+	nSeed : UDINT := 0;
+	bAutoMode : BOOL := FALSE;
+	nAutoTickInterval : UDINT := 50;
+
+	// Outputs
+	eDefault : E_Default;
+	eByte : E_Byte;
+	eWord : E_Word;
+	eDWord : E_DWord;
+	eLWord : E_LWord;
+	eSInt : E_SInt;
+	eUSInt : E_USInt;
+	eInt : E_Int;
+	eUInt : E_UInt;
+	eDInt : E_DInt;
+	eUDInt : E_UDInt;
+	eLInt : E_LInt;
+	eULInt : E_ULInt;
+	eNegative : E_Negative;
+	eSparse : E_Sparse;
+	
+	eDefaultWrite : E_Default;
+	eByteWrite : E_Byte;
+	eWordWrite : E_Word;
+	eDWordWrite : E_DWord;
+	eLWordWrite : E_LWord;
+	eSIntWrite : E_SInt;
+	eUSIntWrite : E_USInt;
+	eIntWrite : E_Int;
+	eUIntWrite : E_UInt;
+	eDIntWrite : E_DInt;
+	eUDIntWrite : E_UDInt;
+	eLIntWrite : E_LInt;
+	eULIntWrite : E_ULInt;
+	eNegativeWrite : E_Negative;
+	eSparseWrite : E_Sparse;
+	
+	eImplicit : (eImplicitOptionA, eImplicitOptionB, eImplicitOptionC);
+
+	// Private
+	nTtickCounter : UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// -----------------------------------------------------------------------
+// Auto-increment mode: advance seed every auto_tick_interval cycles
+// -----------------------------------------------------------------------
+IF bAutoMode THEN
+	IF nTtickCounter >= nAutoTickInterval THEN
+		nSeed := nSeed + 1;
+		nTtickCounter := 0;
+	ELSE
+		nTtickCounter := nTtickCounter + 1;
+	END_IF
+END_IF
+
+CASE nSeed MOD 3 OF
+	0: eDefault := E_Default.eOptionA;
+	1: eDefault := E_Default.eOptionB;
+	2: eDefault := E_Default.eOptionC;
+END_CASE
+
+// BYTE
+CASE eDefault OF
+	E_Default.eOptionA: eByte := E_Byte.eOptionA;
+	E_Default.eOptionB: eByte := E_Byte.eOptionB;
+	E_Default.eOptionC: eByte := E_Byte.eOptionC;
+END_CASE
+
+// WORD
+CASE eDefault OF
+	E_Default.eOptionA: eWord := E_Word.eOptionA;
+	E_Default.eOptionB: eWord := E_Word.eOptionB;
+	E_Default.eOptionC: eWord := E_Word.eOptionC;
+END_CASE
+
+// DWORD
+CASE eDefault OF
+	E_Default.eOptionA: eDWord := E_DWord.eOptionA;
+	E_Default.eOptionB: eDWord := E_DWord.eOptionB;
+	E_Default.eOptionC: eDWord := E_DWord.eOptionC;
+END_CASE
+
+// LWORD
+CASE eDefault OF
+	E_Default.eOptionA: eLWord := E_LWord.eOptionA;
+	E_Default.eOptionB: eLWord := E_LWord.eOptionB;
+	E_Default.eOptionC: eLWord := E_LWord.eOptionC;
+END_CASE
+
+// SINT
+CASE eDefault OF
+	E_Default.eOptionA: eSInt := E_SInt.eOptionA;
+	E_Default.eOptionB: eSInt := E_SInt.eOptionB;
+	E_Default.eOptionC: eSInt := E_SInt.eOptionC;
+END_CASE
+
+// USINT
+CASE eDefault OF
+	E_Default.eOptionA: eUSInt := E_USInt.eOptionA;
+	E_Default.eOptionB: eUSInt := E_USInt.eOptionB;
+	E_Default.eOptionC: eUSInt := E_USInt.eOptionC;
+END_CASE
+
+// INT
+CASE eDefault OF
+	E_Default.eOptionA: eInt := E_Int.eOptionA;
+	E_Default.eOptionB: eInt := E_Int.eOptionB;
+	E_Default.eOptionC: eInt := E_Int.eOptionC;
+END_CASE
+
+// UINT
+CASE eDefault OF
+	E_Default.eOptionA: eUInt := E_UInt.eOptionA;
+	E_Default.eOptionB: eUInt := E_UInt.eOptionB;
+	E_Default.eOptionC: eUInt := E_UInt.eOptionC;
+END_CASE
+
+// DINT
+CASE eDefault OF
+	E_Default.eOptionA: eDInt := E_DInt.eOptionA;
+	E_Default.eOptionB: eDInt := E_DInt.eOptionB;
+	E_Default.eOptionC: eDInt := E_DInt.eOptionC;
+END_CASE
+
+// UDINT
+CASE eDefault OF
+	E_Default.eOptionA: eUDInt := E_UDInt.eOptionA;
+	E_Default.eOptionB: eUDInt := E_UDInt.eOptionB;
+	E_Default.eOptionC: eUDInt := E_UDInt.eOptionC;
+END_CASE
+
+// LINT
+CASE eDefault OF
+	E_Default.eOptionA: eLInt := E_LInt.eOptionA;
+	E_Default.eOptionB: eLInt := E_LInt.eOptionB;
+	E_Default.eOptionC: eLInt := E_LInt.eOptionC;
+END_CASE
+
+// ULINT
+CASE eDefault OF
+	E_Default.eOptionA: eULInt := E_ULInt.eOptionA;
+	E_Default.eOptionB: eULInt := E_ULInt.eOptionB;
+	E_Default.eOptionC: eULInt := E_ULInt.eOptionC;
+END_CASE
+
+// Negative
+CASE eDefault OF
+	E_Default.eOptionA: eNegative := E_Negative.eOptionA;
+	E_Default.eOptionB: eNegative := E_Negative.eOptionB;
+	E_Default.eOptionC: eNegative := E_Negative.eOptionC;
+END_CASE
+
+// Sparse
+CASE eDefault OF
+	E_Default.eOptionA: eSparse := E_Sparse.eOptionA;
+	E_Default.eOptionB: eSparse := E_Sparse.eOptionB;
+	E_Default.eOptionC: eSparse := E_Sparse.eOptionC;
+END_CASE
+
+// Implicit
+CASE eDefault OF
+	E_Default.eOptionA: eImplicit := eImplicitOptionA;
+	E_Default.eOptionB: eImplicit := eImplicitOptionB;
+	E_Default.eOptionC: eImplicit := eImplicitOptionC;
+END_CASE]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

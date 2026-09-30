@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <DUT Name="E_Negative" Id="{7bfc3893-ba0c-4f48-bc12-17ec26a10228}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_Negative :
+(
+	eOptionA := -1,
+	eOptionB := 0,
+	eOptionC := 1
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

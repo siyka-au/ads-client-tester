@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <DUT Name="E_Sint" Id="{eca89de3-6da3-4462-870b-c7a5273878b0}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_Sint :
+(
+	eOptionA := 0,
+	eOptionB,
+	eOptionC
+) SINT;
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

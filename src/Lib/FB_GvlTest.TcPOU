@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <POU Name="FB_GvlTest" Id="{e64978a6-7b94-4bc8-a366-3a9a51ec0fb5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_GvlTest
+VAR
+	// Control (writable by Go test)
+	nSeed : UDINT := 0;
+	bAutoMode : BOOL := FALSE;
+	nAutoTickInterval : UDINT := 50;
+
+	// Private
+	nTtickCounter : UDINT;
+	nLoopIndex1 : UDINT;
+	nLoopIndex2 : UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// -----------------------------------------------------------------------
+// Auto-increment mode: advance seed every auto_tick_interval cycles
+// -----------------------------------------------------------------------
+IF bAutoMode THEN
+	IF nTtickCounter >= nAutoTickInterval THEN
+		nSeed := nSeed + 1;
+		nTtickCounter := 0;
+	ELSE
+		nTtickCounter := nTtickCounter + 1;
+	END_IF
+END_IF
+
+// -----------------------------------------------------------------------
+// Update variables — all fields are deterministic functions of seed
+// -----------------------------------------------------------------------
+GVL_Test.bBoolVar := (nSeed MOD 2 = 0);
+GVL_Test.nSintVar := UDINT_TO_SINT(nSeed);
+GVL_Test.nUsintVar := UDINT_TO_USINT(nSeed);
+GVL_Test.nByteVar := UDINT_TO_BYTE(nSeed);
+GVL_Test.nIntVar := UDINT_TO_INT(nSeed);
+GVL_Test.nUintVar := UDINT_TO_UINT(nSeed);
+GVL_Test.nWordVar := UDINT_TO_WORD(nSeed);
+GVL_Test.nDintVar := UDINT_TO_DINT(nSeed);
+GVL_Test.nUdintVar := nSeed;
+GVL_Test.nDwordVar := UDINT_TO_DWORD(nSeed);
+GVL_Test.nLintVar := UDINT_TO_LINT(nSeed);
+GVL_Test.nUlintVar := UDINT_TO_ULINT(nSeed);
+GVL_Test.nLwordVar := UDINT_TO_LWORD(nSeed);
+GVL_Test.fRealVar := UDINT_TO_REAL(nSeed);
+GVL_Test.fLrealVar := UDINT_TO_LREAL(nSeed);
+
+// Date/time types — raw truncating casts, same bit pattern Go test will verify
+GVL_Test.tTimeVar := UDINT_TO_TIME(nSeed);
+GVL_Test.tdTimeOfDayVar := UDINT_TO_TOD(nSeed MOD 86400000);
+GVL_Test.dDateVar := UDINT_TO_DATE(nSeed);
+GVL_Test.dtDateTimeVar := UDINT_TO_DT(nSeed);
+GVL_Test.tLTimeVar := ULINT_TO_LTIME(UDINT_TO_ULINT(nSeed));
+GVL_Test.tdLTimeOfDayVar  := ULINT_TO_LTOD(UDINT_TO_ULINT(nSeed) MOD 86400000000000);
+GVL_Test.dLDateVar := ULINT_TO_LDATE(UDINT_TO_ULINT(nSeed));
+GVL_Test.dtLDateTimeVar := ULINT_TO_LDT(UDINT_TO_ULINT(nSeed));
+GVL_Test.sStringVar := CONCAT('S=', UDINT_TO_STRING(nSeed));
+
+// -----------------------------------------------------------------------
+// Update test struct — all fields are deterministic functions of seed
+// -----------------------------------------------------------------------
+GVL_Test.stStructVar.nSeed := nSeed;
+GVL_Test.stStructVar.bBoolVar := GVL_Test.bBoolVar;
+GVL_Test.stStructVar.nSintVar := GVL_Test.nSintVar;
+GVL_Test.stStructVar.nUsintVar := GVL_Test.nUsintVar;
+GVL_Test.stStructVar.nByteVar := GVL_Test.nByteVar;
+GVL_Test.stStructVar.nIntVar := GVL_Test.nIntVar;
+GVL_Test.stStructVar.nUintVar := GVL_Test.nUintVar;
+GVL_Test.stStructVar.nWordVar := GVL_Test.nWordVar;
+GVL_Test.stStructVar.nDintVar := GVL_Test.nDintVar;
+GVL_Test.stStructVar.nUdintVar := GVL_Test.nUdintVar;
+GVL_Test.stStructVar.nDwordVar := GVL_Test.nDwordVar;
+GVL_Test.stStructVar.nLintVar := GVL_Test.nLintVar;
+GVL_Test.stStructVar.nUlintVar := GVL_Test.nUlintVar;
+GVL_Test.stStructVar.nLwordVar := GVL_Test.nLwordVar;
+GVL_Test.stStructVar.fRealVar := GVL_Test.fRealVar;
+GVL_Test.stStructVar.fLrealVar := GVL_Test.fLrealVar;
+GVL_Test.stStructVar.tTimeVar := GVL_Test.tTimeVar;
+GVL_Test.stStructVar.tdTimeOfDayVar := GVL_Test.tdTimeOfDayVar;
+GVL_Test.stStructVar.dDateVar := GVL_Test.dDateVar;
+GVL_Test.stStructVar.dtDateTimeVar := GVL_Test.dtDateTimeVar;
+GVL_Test.stStructVar.tLTimeVar := GVL_Test.tLTimeVar;
+GVL_Test.stStructVar.tdLTimeOfDayVar := GVL_Test.tdLTimeOfDayVar;
+GVL_Test.stStructVar.dLDateVar := GVL_Test.dLDateVar;
+GVL_Test.stStructVar.dtLDateTimeVar := GVL_Test.dtLDateTimeVar;
+GVL_Test.stStructVar.sStringVar := GVL_Test.sStringVar;
+
+// -----------------------------------------------------------------------
+// Update 1-D arrays: element[i] = UDINT_TO_x(seed + i)
+// -----------------------------------------------------------------------
+FOR nLoopIndex1 := 0 TO 9 DO
+	GVL_Test.aIntArray[nLoopIndex1] := UDINT_TO_INT(nSeed + nLoopIndex1);
+	GVL_Test.aDintArray[nLoopIndex1] := UDINT_TO_DINT(nSeed + nLoopIndex1);
+END_FOR
+
+// -----------------------------------------------------------------------
+// Update 2-D array: element[i,j] = UDINT_TO_INT(seed + i*3 + j)
+// -----------------------------------------------------------------------
+FOR nLoopIndex1 := 0 TO 2 DO
+	FOR nLoopIndex2 := 0 TO 2 DO
+		GVL_Test.aIntArray2d[nLoopIndex1, nLoopIndex2] := UDINT_TO_INT(nSeed + nLoopIndex1 * 3 + nLoopIndex2);
+	END_FOR
+END_FOR
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
