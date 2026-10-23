@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <POU Name="FB_TickCounter" Id="{1239bdce-5393-4cea-9c85-3d3b14f518ce}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_TickCounter
+VAR_INPUT
+	bExecute : BOOL := FALSE;
+	nAutoTickInterval : UDINT := 50;
+END_VAR
+VAR_OUTPUT
+	bTrigger : BOOL;
+END_VAR
+VAR
+	nSeed : REFERENCE TO UDINT;
+	nTickCounter : UDINT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[bTrigger := bExecute AND nTickCounter >= nAutoTickInterval;
+
+IF bExecute THEN
+	IF bTrigger THEN
+		nTickCounter := 0;
+	ELSE
+		nTickCounter := nTickCounter + 1;
+	END_IF
+ELSE
+	nTickCounter := 0;
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

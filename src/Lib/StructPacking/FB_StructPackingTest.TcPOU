@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <POU Name="FB_StructPackingTest" Id="{b1c2d3e4-0000-4000-8000-000000000001}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'linkalways'}
+FUNCTION_BLOCK FB_StructPackingTest
+VAR
+	nSeed : REFERENCE TO UDINT;
+	stPackNone : ST_StructPackNone;
+	stPackTwo : ST_StructPackTwo;
+	stPackFour : ST_StructPackFour;
+	stPackEight : ST_StructPackEight;
+	
+	// pack_*_write: Go-owned write targets (PLC never modifies, used in phase 2)
+	stPackNoneWrite : ST_StructPackNone;
+	stPackTwoWrite : ST_StructPackTwo;
+	stPackFourWrite : ST_StructPackFour;
+	stPackEightWrite : ST_StructPackEight;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// All four structs share the same fields and the same seed-driven formula.
+// b1  = (seed MOD 2 = 0)
+// d1  = seed
+// b2  = (seed MOD 3 = 0)
+// lw1 = LWORD(seed) * LWORD(3)
+stPackNone.bBoolMember1 := (nSeed MOD 2 = 0);
+stPackNone.nDwordMember := nSeed;
+stPackNone.bBoolMember2 := (nSeed MOD 3 = 0);
+stPackNone.nLwordMember := UDINT_TO_LWORD(nSeed) * UDINT_TO_LWORD(3);
+
+stPackTwo.bBoolMember1 := stPackNone.bBoolMember1;
+stPackTwo.nDwordMember := stPackNone.nDwordMember;
+stPackTwo.bBoolMember2 := stPackNone.bBoolMember2;
+stPackTwo.nLwordMember := stPackNone.nLwordMember;
+
+stPackFour.bBoolMember1 := stPackNone.bBoolMember1;
+stPackFour.nDwordMember := stPackNone.nDwordMember;
+stPackFour.bBoolMember2 := stPackNone.bBoolMember2;
+stPackFour.nLwordMember := stPackNone.nLwordMember;
+
+stPackEight.bBoolMember1 := stPackNone.bBoolMember1;
+stPackEight.nDwordMember := stPackNone.nDwordMember;
+stPackEight.bBoolMember2 := stPackNone.bBoolMember2;
+stPackEight.nLwordMember := stPackNone.nLwordMember;
+]]></ST>
+    </Implementation>
+    <Method Name="FB_Init" Id="{e9d8d12f-0f61-431f-92d3-8c187d95f2b2}">
+      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
+//The return value is not evaluated. For a specific influence, you can also declare the
+//methods explicitly and provide additional code there with the standard initialization
+//code. You can evaluate the return value.
+METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
+	nSeed : REFERENCE TO UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -32,8 +32,7 @@ VAR
 	aIntArray : ARRAY[0..9] OF INT;
 	aDintArray : ARRAY[0..9] OF DINT;
 	aIntArray2d : ARRAY[0..2, 0..2] OF INT;
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>

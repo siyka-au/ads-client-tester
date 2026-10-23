@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <POU Name="FB_TypeTest" Id="{bc0b066e-a64b-45c0-8e3e-84f5d0118792}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_TypeTest
+VAR
+	// Control
+	nSeed : REFERENCE TO UDINT;
+
+	// Outputs
+	bBoolVar : BOOL;
+	nSintVar : SINT;
+	nUsintVar : USINT;
+	nByteVar : BYTE;
+	nIntVar : INT;
+	nUintVar : UINT;
+	nWordVar : WORD;
+	nDintVar : DINT;
+	nUdintVar : UDINT;
+	nDwordVar : DWORD;
+	nLintVar : LINT;
+	nUlintVar : ULINT;
+	nLwordVar : LWORD;
+	fRealVar : REAL;
+	fLrealVar : LREAL;
+	
+	nSubRange : INT(-10..10);
+	
+	tTimeVar : TIME;
+	tdTimeOfDayVar : TOD;
+	dDateVar : DATE;
+	dtDateTimeVar : DT;
+	tLtimeVar : LTIME;
+	tdLTimeOfDayVar : LTOD;
+	dLDateVar : LDATE;
+	dtLDateTimeVar : LDT;
+	
+	sStringVar : STRING(255);
+	stStructVar : ST_TypeTestStruct;
+	
+	aIntArray : ARRAY[0..9] OF INT;
+	aDintArray : ARRAY[-9..9] OF DINT;
+	aIntArray2d : ARRAY[0..2, 0..2] OF INT;
+	aStructVar : ARRAY[0..9] OF ST_TypeTestSubStruct;
+
+	// Private
+	nLoopIndex1 : DINT;
+	nLoopIndex2 : UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// -----------------------------------------------------------------------
+// Update variables — all fields are deterministic functions of seed
+// -----------------------------------------------------------------------
+bBoolVar := (nSeed MOD 2 = 0);
+nSintVar := UDINT_TO_SINT(nSeed);
+nUsintVar := UDINT_TO_USINT(nSeed);
+nByteVar := UDINT_TO_BYTE(nSeed);
+nIntVar := UDINT_TO_INT(nSeed);
+nUintVar := UDINT_TO_UINT(nSeed);
+nWordVar := UDINT_TO_WORD(nSeed);
+nDintVar := UDINT_TO_DINT(nSeed);
+nUdintVar := nSeed;
+nDwordVar := UDINT_TO_DWORD(nSeed);
+nLintVar := UDINT_TO_LINT(nSeed);
+nUlintVar := UDINT_TO_ULINT(nSeed);
+nLwordVar := UDINT_TO_LWORD(nSeed);
+fRealVar := UDINT_TO_REAL(nSeed);
+fLrealVar := UDINT_TO_LREAL(nSeed);
+
+// Sub range
+nSubRange := UDINT_TO_INT(nSeed MOD 21) - 10;
+
+// Date/time types — raw truncating casts, same bit pattern Go test will verify
+tTimeVar := UDINT_TO_TIME(nSeed);
+tdTimeOfDayVar := UDINT_TO_TOD(nSeed MOD 86400000);
+dDateVar := UDINT_TO_DATE(nSeed);
+dtDateTimeVar := UDINT_TO_DT(nSeed);
+tLTimeVar := ULINT_TO_LTIME(UDINT_TO_ULINT(nSeed));
+tdLTimeOfDayVar  := ULINT_TO_LTOD(UDINT_TO_ULINT(nSeed) MOD 86400000000000);
+dLDateVar := ULINT_TO_LDATE(UDINT_TO_ULINT(nSeed));
+dtLDateTimeVar := ULINT_TO_LDT(UDINT_TO_ULINT(nSeed));
+sStringVar := CONCAT('S=', UDINT_TO_STRING(nSeed));
+
+// -----------------------------------------------------------------------
+// Update test struct — all fields are deterministic functions of seed
+// -----------------------------------------------------------------------
+stStructVar.nSeed := nSeed;
+
+stStructVar.bBoolVar := bBoolVar;
+stStructVar.nSintVar := nSintVar;
+stStructVar.nUsintVar := nUsintVar;
+stStructVar.nByteVar := nByteVar;
+stStructVar.nIntVar := nIntVar;
+stStructVar.nUintVar := nUintVar;
+stStructVar.nWordVar := nWordVar;
+stStructVar.nDintVar := nDintVar;
+stStructVar.nUdintVar := nUdintVar;
+stStructVar.nDwordVar := nDwordVar;
+stStructVar.nLintVar := nLintVar;
+stStructVar.nUlintVar := nUlintVar;
+stStructVar.nLwordVar := nLwordVar;
+stStructVar.fRealVar := fRealVar;
+stStructVar.fLrealVar := fLrealVar;
+stStructVar.tTimeVar := tTimeVar;
+stStructVar.tdTimeOfDayVar := tdTimeOfDayVar;
+stStructVar.dDateVar := dDateVar;
+stStructVar.dtDateTimeVar := dtDateTimeVar;
+stStructVar.tLTimeVar := tLTimeVar;
+stStructVar.tdLTimeOfDayVar := tdLTimeOfDayVar;
+stStructVar.dLDateVar := dLDateVar;
+stStructVar.dtLDateTimeVar := dtLDateTimeVar;
+stStructVar.sStringVar := sStringVar;
+
+// Nested struct
+stStructVar.stSubStructVar.bBoolVar := bBoolVar;
+stStructVar.stSubStructVar.nSintVar := nSintVar;
+stStructVar.stSubStructVar.nUsintVar := nUsintVar;
+stStructVar.stSubStructVar.nByteVar := nByteVar;
+stStructVar.stSubStructVar.nIntVar := nIntVar;
+stStructVar.stSubStructVar.nUintVar := nUintVar;
+stStructVar.stSubStructVar.nWordVar := nWordVar;
+stStructVar.stSubStructVar.nDintVar := nDintVar;
+stStructVar.stSubStructVar.nUdintVar := nUdintVar;
+stStructVar.stSubStructVar.nDwordVar := nDwordVar;
+stStructVar.stSubStructVar.nLintVar := nLintVar;
+stStructVar.stSubStructVar.nUlintVar := nUlintVar;
+stStructVar.stSubStructVar.nLwordVar := nLwordVar;
+stStructVar.stSubStructVar.fRealVar := fRealVar;
+stStructVar.stSubStructVar.fLrealVar := fLrealVar;
+stStructVar.stSubStructVar.tTimeVar := tTimeVar;
+stStructVar.stSubStructVar.tdTimeOfDayVar := tdTimeOfDayVar;
+stStructVar.stSubStructVar.dDateVar := dDateVar;
+stStructVar.stSubStructVar.dtDateTimeVar := dtDateTimeVar;
+stStructVar.stSubStructVar.tLTimeVar := tLTimeVar;
+stStructVar.stSubStructVar.tdLTimeOfDayVar := tdLTimeOfDayVar;
+stStructVar.stSubStructVar.dLDateVar := dLDateVar;
+stStructVar.stSubStructVar.dtLDateTimeVar := dtLDateTimeVar;
+stStructVar.stSubStructVar.sStringVar := sStringVar;
+
+// -----------------------------------------------------------------------
+// Update 1-D arrays: element[i] = UDINT_TO_x(seed + i)
+// -----------------------------------------------------------------------
+FOR nLoopIndex1 := 0 TO 9 DO
+	aIntArray[nLoopIndex1] := UDINT_TO_INT(nSeed + DINT_TO_UDINT(nLoopIndex1));
+END_FOR
+
+FOR nLoopIndex1 := -9 TO 9 DO
+	aDintArray[nLoopIndex1] := UDINT_TO_DINT(UDINT_TO_DINT(nSeed) + nLoopIndex1);
+END_FOR
+
+// -----------------------------------------------------------------------
+// Update 2-D array: element[i,j] = UDINT_TO_INT(seed + i*3 + j)
+// -----------------------------------------------------------------------
+FOR nLoopIndex1 := 0 TO 2 DO
+	FOR nLoopIndex2 := 0 TO 2 DO
+		aIntArray2d[nLoopIndex1, nLoopIndex2] := UDINT_TO_INT(nSeed + DINT_TO_UDINT(nLoopIndex1) * 3 + nLoopIndex2);
+	END_FOR
+END_FOR
+
+// -----------------------------------------------------------------------
+// Update struct array: 
+// -----------------------------------------------------------------------
+FOR nLoopIndex1 := 0 TO 9 DO
+	aStructVar[nLoopIndex1].bBoolVar := bBoolVar;
+	aStructVar[nLoopIndex1].nSintVar := nSintVar;
+	aStructVar[nLoopIndex1].nUsintVar := nUsintVar;
+	aStructVar[nLoopIndex1].nByteVar := nByteVar;
+	aStructVar[nLoopIndex1].nIntVar := nIntVar;
+	aStructVar[nLoopIndex1].nUintVar := nUintVar;
+	aStructVar[nLoopIndex1].nWordVar := nWordVar;
+	aStructVar[nLoopIndex1].nDintVar := nDintVar;
+	aStructVar[nLoopIndex1].nUdintVar := nUdintVar;
+	aStructVar[nLoopIndex1].nDwordVar := nDwordVar;
+	aStructVar[nLoopIndex1].nLintVar := nLintVar;
+	aStructVar[nLoopIndex1].nUlintVar := nUlintVar;
+	aStructVar[nLoopIndex1].nLwordVar := nLwordVar;
+	aStructVar[nLoopIndex1].fRealVar := fRealVar;
+	aStructVar[nLoopIndex1].fLrealVar := fLrealVar;
+	aStructVar[nLoopIndex1].tTimeVar := tTimeVar;
+	aStructVar[nLoopIndex1].tdTimeOfDayVar := tdTimeOfDayVar;
+	aStructVar[nLoopIndex1].dDateVar := dDateVar;
+	aStructVar[nLoopIndex1].dtDateTimeVar := dtDateTimeVar;
+	aStructVar[nLoopIndex1].tLTimeVar := tLTimeVar;
+	aStructVar[nLoopIndex1].tdLTimeOfDayVar := tdLTimeOfDayVar;
+	aStructVar[nLoopIndex1].dLDateVar := dLDateVar;
+	aStructVar[nLoopIndex1].dtLDateTimeVar := dtLDateTimeVar;
+	aStructVar[nLoopIndex1].sStringVar := sStringVar;
+END_FOR]]></ST>
+    </Implementation>
+    <Method Name="FB_Init" Id="{9593b205-34e4-4464-9905-257d1d6aeb4f}">
+      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
+//The return value is not evaluated. For a specific influence, you can also declare the
+//methods explicitly and provide additional code there with the standard initialization
+//code. You can evaluate the return value.
+METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
+	nSeed : REFERENCE TO UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

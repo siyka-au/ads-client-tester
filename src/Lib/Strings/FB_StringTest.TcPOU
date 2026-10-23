@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <POU Name="FB_StringTest" Id="{c8559e5c-3fe0-41a9-97c7-107fe10d7bc4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_StringTest
+VAR
+	// Control
+	nSeed : REFERENCE TO UDINT;
+
+	// Written by the Go test
+	sStringVar : STRING(255);
+	sShortStringVar : STRING(5);
+	wsWStringVar : WSTRING(255);
+
+	// What the PLC sees in them, recomputed every cycle
+	nStringLen : INT;                        // LEN(sStringVar): characters as the PLC counts them
+	nShortStringLen : INT;                   // LEN(sShortStringVar)
+	nWStringLen : INT;                       // WLEN(wsWStringVar): UTF-16 code units
+	aStringBytes : ARRAY[0..255] OF BYTE;    // the bytes of sStringVar
+	aWStringWords : ARRAY[0..255] OF WORD;   // the code units of wsWStringVar
+	wsFromString : WSTRING(255);             // STRING_TO_WSTRING(sStringVar)
+	sFromWString : STRING(255);              // WSTRING_TO_STRING(wsWStringVar)
+
+	// Produced by the PLC
+	sLatinLiteral : STRING(255) := 'Grüße € ÄÖÜ ñ ©';
+	wsLiteral : WSTRING(255) := "Grüße € 日本語";
+	sAllBytes : STRING(255);                 // bytes 16#01..16#FF in order
+	wsAllBytes : WSTRING(255);               // STRING_TO_WSTRING(sAllBytes): Beckhoff's mapping of every byte
+
+	// Private
+	aByteTable : ARRAY[0..255] OF BYTE;
+	nIndex : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// -----------------------------------------------------------------------
+// Report what the PLC sees in the strings the Go test wrote
+// -----------------------------------------------------------------------
+nStringLen := LEN(sStringVar);
+nShortStringLen := LEN(sShortStringVar);
+nWStringLen := WLEN(wsWStringVar);
+MEMCPY(destAddr := ADR(aStringBytes), srcAddr := ADR(sStringVar), n := SIZEOF(aStringBytes));
+MEMCPY(destAddr := ADR(aWStringWords), srcAddr := ADR(wsWStringVar), n := SIZEOF(aWStringWords));
+wsFromString := STRING_TO_WSTRING(sStringVar);
+sFromWString := WSTRING_TO_STRING(wsWStringVar);
+
+// -----------------------------------------------------------------------
+// Every non-NUL byte in one STRING, and Beckhoff's conversion of it
+// -----------------------------------------------------------------------
+FOR nIndex := 0 TO 254 DO
+	aByteTable[nIndex] := INT_TO_BYTE(nIndex + 1);
+END_FOR
+aByteTable[255] := 0;
+MEMCPY(destAddr := ADR(sAllBytes), srcAddr := ADR(aByteTable), n := SIZEOF(sAllBytes));
+wsAllBytes := STRING_TO_WSTRING(sAllBytes);
+]]></ST>
+    </Implementation>
+    <Method Name="FB_Init" Id="{136d79b9-e483-4b34-a037-e091b5d56aa3}">
+      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
+//The return value is not evaluated. For a specific influence, you can also declare the
+//methods explicitly and provide additional code there with the standard initialization
+//code. You can evaluate the return value.
+METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
+	nSeed : REFERENCE TO UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

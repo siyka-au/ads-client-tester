@@ -3,31 +3,16 @@
   <POU Name="FB_GvlTest" Id="{e64978a6-7b94-4bc8-a366-3a9a51ec0fb5}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_GvlTest
 VAR
-	// Control (writable by Go test)
-	nSeed : UDINT := 0;
-	bAutoMode : BOOL := FALSE;
-	nAutoTickInterval : UDINT := 50;
+	// Control
+	nSeed : REFERENCE TO UDINT;
 
 	// Private
-	nTtickCounter : UDINT;
 	nLoopIndex1 : UDINT;
 	nLoopIndex2 : UDINT;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[// -----------------------------------------------------------------------
-// Auto-increment mode: advance seed every auto_tick_interval cycles
-// -----------------------------------------------------------------------
-IF bAutoMode THEN
-	IF nTtickCounter >= nAutoTickInterval THEN
-		nSeed := nSeed + 1;
-		nTtickCounter := 0;
-	ELSE
-		nTtickCounter := nTtickCounter + 1;
-	END_IF
-END_IF
-
-// -----------------------------------------------------------------------
 // Update variables — all fields are deterministic functions of seed
 // -----------------------------------------------------------------------
 GVL_Test.bBoolVar := (nSeed MOD 2 = 0);
@@ -104,5 +89,20 @@ FOR nLoopIndex1 := 0 TO 2 DO
 END_FOR
 ]]></ST>
     </Implementation>
+    <Method Name="FB_Init" Id="{8b66484e-bb4e-4270-b0d2-b32177d32d63}">
+      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
+//The return value is not evaluated. For a specific influence, you can also declare the
+//methods explicitly and provide additional code there with the standard initialization
+//code. You can evaluate the return value.
+METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
+	nSeed : REFERENCE TO UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>

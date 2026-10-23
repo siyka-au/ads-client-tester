@@ -3,10 +3,8 @@
   <POU Name="FB_EnumTest" Id="{df109b34-e749-4a3e-92d4-f8bf03f5c727}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_EnumTest
 VAR
-	// Control (writable by Go test)
-	nSeed : UDINT := 0;
-	bAutoMode : BOOL := FALSE;
-	nAutoTickInterval : UDINT := 50;
+	// Control
+	nSeed : REFERENCE TO UDINT;
 
 	// Outputs
 	eDefault : E_Default;
@@ -42,25 +40,10 @@ VAR
 	eSparseWrite : E_Sparse;
 	
 	eImplicit : (eImplicitOptionA, eImplicitOptionB, eImplicitOptionC);
-
-	// Private
-	nTtickCounter : UDINT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// -----------------------------------------------------------------------
-// Auto-increment mode: advance seed every auto_tick_interval cycles
-// -----------------------------------------------------------------------
-IF bAutoMode THEN
-	IF nTtickCounter >= nAutoTickInterval THEN
-		nSeed := nSeed + 1;
-		nTtickCounter := 0;
-	ELSE
-		nTtickCounter := nTtickCounter + 1;
-	END_IF
-END_IF
-
-CASE nSeed MOD 3 OF
+      <ST><![CDATA[CASE nSeed MOD 3 OF
 	0: eDefault := E_Default.eOptionA;
 	1: eDefault := E_Default.eOptionB;
 	2: eDefault := E_Default.eOptionC;
@@ -171,5 +154,20 @@ CASE eDefault OF
 	E_Default.eOptionC: eImplicit := eImplicitOptionC;
 END_CASE]]></ST>
     </Implementation>
+    <Method Name="FB_Init" Id="{3f48062e-6d73-4faa-bb56-1b3427592a08}">
+      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
+//The return value is not evaluated. For a specific influence, you can also declare the
+//methods explicitly and provide additional code there with the standard initialization
+//code. You can evaluate the return value.
+METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
+	nSeed : REFERENCE TO UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>
