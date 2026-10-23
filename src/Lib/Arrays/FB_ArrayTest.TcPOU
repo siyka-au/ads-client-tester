@@ -4,12 +4,11 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ArrayTest
 VAR
 	// Control
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 
 	// Scratch (derived-value working storage, not seed-test outputs)
-	nSeedSt1 : UDINT;
-	nScratch : UDINT;
-	nScratch64 : ULINT;
+	nSeedSt1 : ULINT;
+	nScratch : ULINT;
 
 	// Outputs
 	(*
@@ -109,14 +108,14 @@ END_VAR]]></Declaration>
 nSeedSt1 := nSeed + 1000000;
 FOR i := 0 TO 2 DO
     FOR j := 0 TO 2 DO
-        st1.arr1[i,j] := DINT_TO_INT(UDINT_TO_DINT(nSeedSt1) + i*2 + j*3);
+        st1.arr1[i,j] := DINT_TO_INT(ULINT_TO_DINT(nSeedSt1) + i*2 + j*3);
     END_FOR
 END_FOR
 FOR i := 0 TO 1 DO
     FOR j := 0 TO 1 DO
         FOR k := 0 TO 1 DO
             FOR l := 0 TO 1 DO
-                st1.arr2[i,j][k,l] := DINT_TO_INT(UDINT_TO_DINT(nSeedSt1) + i*2 + j*3 + k*5 + l*7);
+                st1.arr2[i,j][k,l] := DINT_TO_INT(ULINT_TO_DINT(nSeedSt1) + i*2 + j*3 + k*5 + l*7);
             END_FOR
         END_FOR
     END_FOR
@@ -125,7 +124,7 @@ FOR i := 0 TO 1 DO
     FOR j := 0 TO 1 DO
         FOR k := 0 TO 1 DO
             FOR l := 0 TO 1 DO
-                st1.arr3[i,j,k][l] := DINT_TO_INT(UDINT_TO_DINT(nSeedSt1) + i*2 + j*3 + k*5 + l*7);
+                st1.arr3[i,j,k][l] := DINT_TO_INT(ULINT_TO_DINT(nSeedSt1) + i*2 + j*3 + k*5 + l*7);
             END_FOR
         END_FOR
     END_FOR
@@ -134,7 +133,7 @@ END_FOR
 // arr1 : ARRAY[0..2,0..2] OF INT
 FOR i := 0 TO 2 DO
     FOR j := 0 TO 2 DO
-        arr1[i,j] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3);
+        arr1[i,j] := DINT_TO_INT(ULINT_TO_DINT(nSeed) + i*2 + j*3);
     END_FOR
 END_FOR
 
@@ -143,7 +142,7 @@ FOR i := 0 TO 1 DO
     FOR j := 0 TO 1 DO
         FOR k := 0 TO 1 DO
             FOR l := 0 TO 1 DO
-                arr2[i,j][k,l] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
+                arr2[i,j][k,l] := DINT_TO_INT(ULINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
             END_FOR
         END_FOR
     END_FOR
@@ -154,7 +153,7 @@ FOR i := 0 TO 1 DO
     FOR j := 0 TO 1 DO
         FOR k := 0 TO 1 DO
             FOR l := 0 TO 1 DO
-                arr3[i,j,k][l] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
+                arr3[i,j,k][l] := DINT_TO_INT(ULINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
             END_FOR
         END_FOR
     END_FOR
@@ -163,7 +162,7 @@ END_FOR
 // arr4 : ARRAY[5..5] OF ARRAY[0..9] OF INT (degenerate outer dim)
 FOR i := 5 TO 5 DO
     FOR j := 0 TO 9 DO
-        arr4[i][j] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3);
+        arr4[i][j] := DINT_TO_INT(ULINT_TO_DINT(nSeed) + i*2 + j*3);
     END_FOR
 END_FOR
 
@@ -171,7 +170,7 @@ END_FOR
 FOR i := -5 TO 5 DO
     FOR j := -3 TO 3 DO
         FOR k := -9 TO -1 DO
-            arr5[i,j][k] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5);
+            arr5[i,j][k] := DINT_TO_INT(ULINT_TO_DINT(nSeed) + i*2 + j*3 + k*5);
         END_FOR
     END_FOR
 END_FOR
@@ -193,8 +192,8 @@ END_FOR
 // arr7 : ARRAY[0..2,0..2] OF ST_ArrayBits (64-bit pattern, bulk copy)
 FOR i := 0 TO 2 DO
     FOR j := 0 TO 2 DO
-        nScratch64 := UDINT_TO_ULINT(nSeed) + DINT_TO_ULINT(i)*2 + DINT_TO_ULINT(j)*3;
-        MEMCPY(ADR(arr7[i,j]), ADR(nScratch64), SIZEOF(arr7[i,j]));
+        nScratch := nSeed + DINT_TO_ULINT(i)*2 + DINT_TO_ULINT(j)*3;
+        MEMCPY(ADR(arr7[i,j]), ADR(nScratch), SIZEOF(arr7[i,j]));
     END_FOR
 END_FOR
 
@@ -203,7 +202,7 @@ FOR i := 0 TO 1 DO
     FOR j := 0 TO 1 DO
         FOR k := 0 TO 1 DO
             FOR l := 0 TO 1 DO
-                arr8[i][j][k][l] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
+                arr8[i][j][k][l] := DINT_TO_INT(ULINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
             END_FOR
         END_FOR
     END_FOR
@@ -218,7 +217,7 @@ FOR i := 0 TO 1 DO
      FOR n := 0 TO 1 DO
       FOR o := 0 TO 1 DO
        FOR p := 0 TO 1 DO
-        arr9[i,j][k,l][m,n][o,p] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7 + m*11 + n*13 + o*17 + p*19);
+        arr9[i,j][k,l][m,n][o,p] := DINT_TO_INT(ULINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7 + m*11 + n*13 + o*17 + p*19);
        END_FOR
       END_FOR
      END_FOR
@@ -237,7 +236,7 @@ METHOD FB_Init: BOOL
 VAR_INPUT
     bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
     bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>

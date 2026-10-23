@@ -4,7 +4,7 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TypeTest
 VAR
 	// Control
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 
 	// Outputs
 	bBoolVar : BOOL;
@@ -52,39 +52,39 @@ END_VAR
 // Update variables — all fields are deterministic functions of seed
 // -----------------------------------------------------------------------
 bBoolVar := (nSeed MOD 2 = 0);
-nSintVar := UDINT_TO_SINT(nSeed);
-nUsintVar := UDINT_TO_USINT(nSeed);
-nByteVar := UDINT_TO_BYTE(nSeed);
-nIntVar := UDINT_TO_INT(nSeed);
-nUintVar := UDINT_TO_UINT(nSeed);
-nWordVar := UDINT_TO_WORD(nSeed);
-nDintVar := UDINT_TO_DINT(nSeed);
-nUdintVar := nSeed;
-nDwordVar := UDINT_TO_DWORD(nSeed);
-nLintVar := UDINT_TO_LINT(nSeed);
-nUlintVar := UDINT_TO_ULINT(nSeed);
-nLwordVar := UDINT_TO_LWORD(nSeed);
-fRealVar := UDINT_TO_REAL(nSeed);
-fLrealVar := UDINT_TO_LREAL(nSeed);
+nSintVar := ULINT_TO_SINT(nSeed);
+nUsintVar := ULINT_TO_USINT(nSeed);
+nByteVar := ULINT_TO_BYTE(nSeed);
+nIntVar := ULINT_TO_INT(nSeed);
+nUintVar := ULINT_TO_UINT(nSeed);
+nWordVar := ULINT_TO_WORD(nSeed);
+nDintVar := ULINT_TO_DINT(nSeed);
+nUdintVar := ULINT_TO_UDINT(nSeed);
+nDwordVar := ULINT_TO_DWORD(nSeed);
+nLintVar := ULINT_TO_LINT(nSeed);
+nUlintVar := nSeed;
+nLwordVar := ULINT_TO_LWORD(nSeed);
+fRealVar := ULINT_TO_REAL(nSeed);
+fLrealVar := ULINT_TO_LREAL(nSeed);
 
 // Sub range
-nSubRange := UDINT_TO_INT(nSeed MOD 21) - 10;
+nSubRange := ULINT_TO_INT(nSeed MOD 21) - 10;
 
 // Date/time types — raw truncating casts, same bit pattern Go test will verify
-tTimeVar := UDINT_TO_TIME(nSeed);
-tdTimeOfDayVar := UDINT_TO_TOD(nSeed MOD 86400000);
-dDateVar := UDINT_TO_DATE(nSeed);
-dtDateTimeVar := UDINT_TO_DT(nSeed);
-tLTimeVar := ULINT_TO_LTIME(UDINT_TO_ULINT(nSeed));
-tdLTimeOfDayVar  := ULINT_TO_LTOD(UDINT_TO_ULINT(nSeed) MOD 86400000000000);
-dLDateVar := ULINT_TO_LDATE(UDINT_TO_ULINT(nSeed));
-dtLDateTimeVar := ULINT_TO_LDT(UDINT_TO_ULINT(nSeed));
-sStringVar := CONCAT('S=', UDINT_TO_STRING(nSeed));
+tTimeVar := ULINT_TO_TIME(nSeed);
+tdTimeOfDayVar := ULINT_TO_TOD(nSeed MOD 86400000);
+dDateVar := ULINT_TO_DATE(nSeed);
+dtDateTimeVar := ULINT_TO_DT(nSeed);
+tLTimeVar := ULINT_TO_LTIME(nSeed);
+tdLTimeOfDayVar  := ULINT_TO_LTOD(nSeed MOD 86400000000000);
+dLDateVar := ULINT_TO_LDATE(nSeed);
+dtLDateTimeVar := ULINT_TO_LDT(nSeed);
+sStringVar := CONCAT('S=', ULINT_TO_STRING(nSeed));
 
 // -----------------------------------------------------------------------
 // Update test struct — all fields are deterministic functions of seed
 // -----------------------------------------------------------------------
-stStructVar.nSeed := nSeed;
+stStructVar.nSeed := ULINT_TO_UDINT(nSeed);
 
 stStructVar.bBoolVar := bBoolVar;
 stStructVar.nSintVar := nSintVar;
@@ -141,11 +141,11 @@ stStructVar.stSubStructVar.sStringVar := sStringVar;
 // Update 1-D arrays: element[i] = UDINT_TO_x(seed + i)
 // -----------------------------------------------------------------------
 FOR nLoopIndex1 := 0 TO 9 DO
-	aIntArray[nLoopIndex1] := UDINT_TO_INT(nSeed + DINT_TO_UDINT(nLoopIndex1));
+	aIntArray[nLoopIndex1] := ULINT_TO_INT(nSeed + DINT_TO_ULINT(nLoopIndex1));
 END_FOR
 
 FOR nLoopIndex1 := -9 TO 9 DO
-	aDintArray[nLoopIndex1] := UDINT_TO_DINT(UDINT_TO_DINT(nSeed) + nLoopIndex1);
+	aDintArray[nLoopIndex1] := ULINT_TO_DINT(nSeed) + nLoopIndex1;
 END_FOR
 
 // -----------------------------------------------------------------------
@@ -153,7 +153,7 @@ END_FOR
 // -----------------------------------------------------------------------
 FOR nLoopIndex1 := 0 TO 2 DO
 	FOR nLoopIndex2 := 0 TO 2 DO
-		aIntArray2d[nLoopIndex1, nLoopIndex2] := UDINT_TO_INT(nSeed + DINT_TO_UDINT(nLoopIndex1) * 3 + nLoopIndex2);
+		aIntArray2d[nLoopIndex1, nLoopIndex2] := LINT_TO_INT(ULINT_TO_LINT(nSeed) + nLoopIndex1 * 3 + nLoopIndex2);
 	END_FOR
 END_FOR
 
@@ -196,7 +196,7 @@ METHOD FB_Init: BOOL
 VAR_INPUT
     bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
     bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>

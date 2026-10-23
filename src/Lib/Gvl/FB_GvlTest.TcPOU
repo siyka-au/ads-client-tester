@@ -4,7 +4,7 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_GvlTest
 VAR
 	// Control
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 
 	// Private
 	nLoopIndex1 : UDINT;
@@ -16,36 +16,36 @@ END_VAR
 // Update variables — all fields are deterministic functions of seed
 // -----------------------------------------------------------------------
 GVL_Test.bBoolVar := (nSeed MOD 2 = 0);
-GVL_Test.nSintVar := UDINT_TO_SINT(nSeed);
-GVL_Test.nUsintVar := UDINT_TO_USINT(nSeed);
-GVL_Test.nByteVar := UDINT_TO_BYTE(nSeed);
-GVL_Test.nIntVar := UDINT_TO_INT(nSeed);
-GVL_Test.nUintVar := UDINT_TO_UINT(nSeed);
-GVL_Test.nWordVar := UDINT_TO_WORD(nSeed);
-GVL_Test.nDintVar := UDINT_TO_DINT(nSeed);
-GVL_Test.nUdintVar := nSeed;
-GVL_Test.nDwordVar := UDINT_TO_DWORD(nSeed);
-GVL_Test.nLintVar := UDINT_TO_LINT(nSeed);
-GVL_Test.nUlintVar := UDINT_TO_ULINT(nSeed);
-GVL_Test.nLwordVar := UDINT_TO_LWORD(nSeed);
-GVL_Test.fRealVar := UDINT_TO_REAL(nSeed);
-GVL_Test.fLrealVar := UDINT_TO_LREAL(nSeed);
+GVL_Test.nSintVar := ULINT_TO_SINT(nSeed);
+GVL_Test.nUsintVar := ULINT_TO_USINT(nSeed);
+GVL_Test.nByteVar := ULINT_TO_BYTE(nSeed);
+GVL_Test.nIntVar := ULINT_TO_INT(nSeed);
+GVL_Test.nUintVar := ULINT_TO_UINT(nSeed);
+GVL_Test.nWordVar := ULINT_TO_WORD(nSeed);
+GVL_Test.nDintVar := ULINT_TO_DINT(nSeed);
+GVL_Test.nUdintVar := ULINT_TO_UDINT(nSeed);
+GVL_Test.nDwordVar := ULINT_TO_DWORD(nSeed);
+GVL_Test.nLintVar := ULINT_TO_LINT(nSeed);
+GVL_Test.nUlintVar := nSeed;
+GVL_Test.nLwordVar := ULINT_TO_LWORD(nSeed);
+GVL_Test.fRealVar := ULINT_TO_REAL(nSeed);
+GVL_Test.fLrealVar := ULINT_TO_LREAL(nSeed);
 
 // Date/time types — raw truncating casts, same bit pattern Go test will verify
-GVL_Test.tTimeVar := UDINT_TO_TIME(nSeed);
-GVL_Test.tdTimeOfDayVar := UDINT_TO_TOD(nSeed MOD 86400000);
-GVL_Test.dDateVar := UDINT_TO_DATE(nSeed);
-GVL_Test.dtDateTimeVar := UDINT_TO_DT(nSeed);
-GVL_Test.tLTimeVar := ULINT_TO_LTIME(UDINT_TO_ULINT(nSeed));
-GVL_Test.tdLTimeOfDayVar  := ULINT_TO_LTOD(UDINT_TO_ULINT(nSeed) MOD 86400000000000);
-GVL_Test.dLDateVar := ULINT_TO_LDATE(UDINT_TO_ULINT(nSeed));
-GVL_Test.dtLDateTimeVar := ULINT_TO_LDT(UDINT_TO_ULINT(nSeed));
-GVL_Test.sStringVar := CONCAT('S=', UDINT_TO_STRING(nSeed));
+GVL_Test.tTimeVar := ULINT_TO_TIME(nSeed);
+GVL_Test.tdTimeOfDayVar := ULINT_TO_TOD(nSeed MOD 86400000);
+GVL_Test.dDateVar := ULINT_TO_DATE(nSeed);
+GVL_Test.dtDateTimeVar := ULINT_TO_DT(nSeed);
+GVL_Test.tLTimeVar := ULINT_TO_LTIME(nSeed);
+GVL_Test.tdLTimeOfDayVar  := ULINT_TO_LTOD(nSeed MOD 86400000000000);
+GVL_Test.dLDateVar := ULINT_TO_LDATE(nSeed);
+GVL_Test.dtLDateTimeVar := ULINT_TO_LDT(nSeed);
+GVL_Test.sStringVar := CONCAT('S=', ULINT_TO_STRING(nSeed));
 
 // -----------------------------------------------------------------------
 // Update test struct — all fields are deterministic functions of seed
 // -----------------------------------------------------------------------
-GVL_Test.stStructVar.nSeed := nSeed;
+GVL_Test.stStructVar.nSeed := ULINT_TO_UDINT(nSeed);
 GVL_Test.stStructVar.bBoolVar := GVL_Test.bBoolVar;
 GVL_Test.stStructVar.nSintVar := GVL_Test.nSintVar;
 GVL_Test.stStructVar.nUsintVar := GVL_Test.nUsintVar;
@@ -75,8 +75,8 @@ GVL_Test.stStructVar.sStringVar := GVL_Test.sStringVar;
 // Update 1-D arrays: element[i] = UDINT_TO_x(seed + i)
 // -----------------------------------------------------------------------
 FOR nLoopIndex1 := 0 TO 9 DO
-	GVL_Test.aIntArray[nLoopIndex1] := UDINT_TO_INT(nSeed + nLoopIndex1);
-	GVL_Test.aDintArray[nLoopIndex1] := UDINT_TO_DINT(nSeed + nLoopIndex1);
+	GVL_Test.aIntArray[nLoopIndex1] := ULINT_TO_INT(nSeed + nLoopIndex1);
+	GVL_Test.aDintArray[nLoopIndex1] := ULINT_TO_DINT(nSeed + nLoopIndex1);
 END_FOR
 
 // -----------------------------------------------------------------------
@@ -84,7 +84,7 @@ END_FOR
 // -----------------------------------------------------------------------
 FOR nLoopIndex1 := 0 TO 2 DO
 	FOR nLoopIndex2 := 0 TO 2 DO
-		GVL_Test.aIntArray2d[nLoopIndex1, nLoopIndex2] := UDINT_TO_INT(nSeed + nLoopIndex1 * 3 + nLoopIndex2);
+		GVL_Test.aIntArray2d[nLoopIndex1, nLoopIndex2] := ULINT_TO_INT(nSeed + nLoopIndex1 * 3 + nLoopIndex2);
 	END_FOR
 END_FOR
 ]]></ST>
@@ -98,7 +98,7 @@ METHOD FB_Init: BOOL
 VAR_INPUT
     bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
     bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>

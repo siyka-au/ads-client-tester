@@ -3,7 +3,7 @@
   <POU Name="Main" Id="{151bda18-a213-42d0-86e0-e79837f085e9}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Main
 VAR
-	nSeed : UDINT := 0;
+	nSeed : ULINT := 0;
 	fbTickCounter : FB_TickCounter;
 	bAutoMode : BOOL := FALSE;
 	nAutoTickInterval : UDINT := 50;

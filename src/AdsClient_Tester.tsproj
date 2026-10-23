@@ -15,7 +15,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{A4B7050C-70E7-4D50-A7FA-822A09BE6866}" Name="AdsClient_DeterministicTester" PrjFilePath="AdsClient_DeterministicTester.plcproj" TmcFilePath="AdsClient_DeterministicTester.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{E6FB492A-D94B-D997-DD09-C6ABC83AEE55}" TmcPath="AdsClient_DeterministicTester.tmc">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{5FC153A4-FA02-D11B-1FA5-2C5CD30AF698}" TmcPath="AdsClient_DeterministicTester.tmc">
 					<Name>AdsClient_DeterministicTester Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>

@@ -4,7 +4,7 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_EnumTest
 VAR
 	// Control
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 
 	// Outputs
 	eDefault : E_Default;
@@ -163,7 +163,7 @@ METHOD FB_Init: BOOL
 VAR_INPUT
     bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
     bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>

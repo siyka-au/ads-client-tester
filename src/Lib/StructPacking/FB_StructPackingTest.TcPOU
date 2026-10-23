@@ -4,7 +4,7 @@
     <Declaration><![CDATA[{attribute 'linkalways'}
 FUNCTION_BLOCK FB_StructPackingTest
 VAR
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 	stPackNone : ST_StructPackNone;
 	stPackTwo : ST_StructPackTwo;
 	stPackFour : ST_StructPackFour;
@@ -23,9 +23,9 @@ END_VAR]]></Declaration>
 // b2  = (seed MOD 3 = 0)
 // lw1 = LWORD(seed) * LWORD(3)
 stPackNone.bBoolMember1 := (nSeed MOD 2 = 0);
-stPackNone.nDwordMember := nSeed;
+stPackNone.nDwordMember := ULINT_TO_DWORD(nSeed);
 stPackNone.bBoolMember2 := (nSeed MOD 3 = 0);
-stPackNone.nLwordMember := UDINT_TO_LWORD(nSeed) * UDINT_TO_LWORD(3);
+stPackNone.nLwordMember := ULINT_TO_LWORD(nSeed) * UDINT_TO_LWORD(3);
 
 stPackTwo.bBoolMember1 := stPackNone.bBoolMember1;
 stPackTwo.nDwordMember := stPackNone.nDwordMember;
@@ -52,7 +52,7 @@ METHOD FB_Init: BOOL
 VAR_INPUT
     bInitRetains : BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
     bInCopyCode : BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)
-	nSeed : REFERENCE TO UDINT;
+	nSeed : REFERENCE TO ULINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.nSeed REF= nSeed;]]></ST>
