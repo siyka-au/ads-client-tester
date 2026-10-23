@@ -6,186 +6,226 @@ VAR
 	// Control
 	nSeed : REFERENCE TO UDINT;
 
+	// Scratch (derived-value working storage, not seed-test outputs)
+	nSeedSt1 : UDINT;
+	nScratch : UDINT;
+	nScratch64 : ULINT;
+
 	// Outputs
-	bBoolVar : BOOL;
-	nSintVar : SINT;
-	nUsintVar : USINT;
-	nByteVar : BYTE;
-	nIntVar : INT;
-	nUintVar : UINT;
-	nWordVar : WORD;
-	nDintVar : DINT;
-	nUdintVar : UDINT;
-	nDwordVar : DWORD;
-	nLintVar : LINT;
-	nUlintVar : ULINT;
-	nLwordVar : LWORD;
-	fRealVar : REAL;
-	fLrealVar : LREAL;
+	(*
+	 * Struct with an array inside -- three different array shapes as sibling
+	 * members (arr1-arr3 above), not nested inside each other. This is the
+	 * inverse of the "array of structs" case already covered elsewhere: here
+	 * the struct-member traversal path (not the array-element path) is what
+	 * has to independently reset/build each member's own arrayType tagging.
+	 * If tagging leaked between siblings -- e.g. arr2's chain-boundary state
+	 * bleeding into arr3's first dimension -- this is the shape that would
+	 * catch it, since the three members sit directly next to each other with
+	 * no array-of-array or struct-of-struct indirection to isolate them first.
+	 *)
+	st1 : ST_Array;
+	 
+	(*
+	 * ARRAY-in-STRUCT-in-ARRAY: Tests whether the arrayType tag correctly
+	 * resets/doesn't leak when addOffsetDepth transitions from array-element
+	 * expansion into struct-member expansion — a real risk given the tag
+	 * propagation is pointer-based.
+	 *)
+	arr1 : ARRAY[0..2,0..2] OF INT;
+	 
+	(*
+	 * A multi-dim link immediately followed by another multi-dim link: two
+	 * 2-dim links back to back (a[i,j][k,l]). More demanding than arr1 since
+	 * every side of this chain boundary is multi-dim itself, not a single
+	 * flat declaration with no boundary at all.
+	 *)
+	arr2 : ARRAY[0..1,0..1] OF ARRAY[0..1,0..1] OF INT;
+
+	(*
+	 * 3+ dims in one link, chained further: stresses that nothing hardcodes
+	 * "at most 2 dims merge."
+	 *)
+	arr3 : ARRAY[0..1,0..1,0..1] OF ARRAY[0..1] OF INT;
+	 
+	(*
+	 * Degenerate single-element dimension: a dimension with exactly 1 element
+	 * (Elements=1), good for off-by-one bugs in the bound/overflow math.
+	 *)
+	arr4: ARRAY[5..5] OF ARRAY[0..9] OF INT;
+	 
+	(*
+	 * Negative bounds on both sides of a mixed boundary: negative bounds
+	 * combined with multi-dim and chaining at once (each individually tested
+	 * already per the fork's history, never together).
+	 *)
+	arr5 : ARRAY[-5..5,-3..3] OF ARRAY[-9..-1] OF INT;
 	
-	nSubRange : INT(-10..10);
+	(*
+	 * Enum as the leaf type: does *Array.Elems end up holding Enum values
+	 * correctly, and does isEnumDataType's special-casing (which already exists
+	 * to stop enums being expanded as structs) interact safely with the new
+	 * array-kind tagging.
+	 *)
+	arr6 : ARRAY[0..2,0..2] OF E_ArrayEnum;
 	
-	tTimeVar : TIME;
-	tdTimeOfDayVar : TOD;
-	dDateVar : DATE;
-	dtDateTimeVar : DT;
-	tLtimeVar : LTIME;
-	tdLTimeOfDayVar : LTOD;
-	dLDateVar : LDATE;
-	dtLDateTimeVar : LDT;
+	(*
+	 * BIT-packed struct as the leaf type, multi-dim: combines two independent
+	 * offset-math systems (bit-packing offsets, array multi-dim offsets) that
+	 * have each been tested alone but maybe never together.
+	 *)
+	arr7 : ARRAY[0..2,0..2] OF ST_ArrayBits;
 	
-	sStringVar : STRING(255);
-	stStructVar : ST_TypeTestStruct;
+	(*
+	 * 4+ level deep pure chain — just recursion depth, to make sure nothing
+	 * assumes "at most 2 or 3 links."
+	 *)
+	arr8 : ARRAY[0..1] OF ARRAY[0..1] OF ARRAY[0..1] OF ARRAY[0..1] OF INT;
 	
-	aIntArray : ARRAY[0..9] OF INT;
-	aDintArray : ARRAY[-9..9] OF DINT;
-	aIntArray2d : ARRAY[0..2, 0..2] OF INT;
-	aStructVar : ARRAY[0..9] OF ST_TypeTestSubStruct;
+	(*
+	 * 4 multi-dim links chained: Stresses both axes at once. nothing may assume
+	 * "at most N links" (arr8's test) AND nothing may assume "a chain boundary
+	 * only ever follows a single-dim link" (arr8's three links are all
+	 * single-dim, giving it a fallback shape to lean on; this one has none)
+	 * -- every one of the three chain boundaries must restart bracket
+	 * nesting while two real dims merge via comma on *both* sides of it,
+	 * four times over, with no single-dim link anywhere to paper over an
+	 * off-by-one in "same declaration vs new declaration."
+	 *)
+	arr9 : ARRAY[0..1, 0..1] OF ARRAY[0..1, 0..1] OF ARRAY[0..1, 0..1] OF ARRAY[0..1, 0..1] OF INT;
 
 	// Private
-	nTtickCounter : UDINT;
-	nLoopIndex1 : DINT;
-	nLoopIndex2 : UDINT;
-END_VAR
-]]></Declaration>
+	// loop variables
+	i : DINT;
+	j : DINT;
+	k : DINT;
+	l : DINT;
+	m : DINT;
+	n : DINT;
+	o : DINT;
+	p : DINT;
+END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// -----------------------------------------------------------------------
-// Update variables — all fields are deterministic functions of seed
-// -----------------------------------------------------------------------
-bBoolVar := (nSeed MOD 2 = 0);
-nSintVar := UDINT_TO_SINT(nSeed);
-nUsintVar := UDINT_TO_USINT(nSeed);
-nByteVar := UDINT_TO_BYTE(nSeed);
-nIntVar := UDINT_TO_INT(nSeed);
-nUintVar := UDINT_TO_UINT(nSeed);
-nWordVar := UDINT_TO_WORD(nSeed);
-nDintVar := UDINT_TO_DINT(nSeed);
-nUdintVar := nSeed;
-nDwordVar := UDINT_TO_DWORD(nSeed);
-nLintVar := UDINT_TO_LINT(nSeed);
-nUlintVar := UDINT_TO_ULINT(nSeed);
-nLwordVar := UDINT_TO_LWORD(nSeed);
-fRealVar := UDINT_TO_REAL(nSeed);
-fLrealVar := UDINT_TO_LREAL(nSeed);
-
-// Sub range
-nSubRange := UDINT_TO_INT(nSeed MOD 21) - 10;
-
-// Date/time types — raw truncating casts, same bit pattern Go test will verify
-tTimeVar := UDINT_TO_TIME(nSeed);
-tdTimeOfDayVar := UDINT_TO_TOD(nSeed MOD 86400000);
-dDateVar := UDINT_TO_DATE(nSeed);
-dtDateTimeVar := UDINT_TO_DT(nSeed);
-tLTimeVar := ULINT_TO_LTIME(UDINT_TO_ULINT(nSeed));
-tdLTimeOfDayVar  := ULINT_TO_LTOD(UDINT_TO_ULINT(nSeed) MOD 86400000000000);
-dLDateVar := ULINT_TO_LDATE(UDINT_TO_ULINT(nSeed));
-dtLDateTimeVar := ULINT_TO_LDT(UDINT_TO_ULINT(nSeed));
-sStringVar := CONCAT('S=', UDINT_TO_STRING(nSeed));
-
-// -----------------------------------------------------------------------
-// Update test struct — all fields are deterministic functions of seed
-// -----------------------------------------------------------------------
-stStructVar.nSeed := nSeed;
-
-stStructVar.bBoolVar := bBoolVar;
-stStructVar.nSintVar := nSintVar;
-stStructVar.nUsintVar := nUsintVar;
-stStructVar.nByteVar := nByteVar;
-stStructVar.nIntVar := nIntVar;
-stStructVar.nUintVar := nUintVar;
-stStructVar.nWordVar := nWordVar;
-stStructVar.nDintVar := nDintVar;
-stStructVar.nUdintVar := nUdintVar;
-stStructVar.nDwordVar := nDwordVar;
-stStructVar.nLintVar := nLintVar;
-stStructVar.nUlintVar := nUlintVar;
-stStructVar.nLwordVar := nLwordVar;
-stStructVar.fRealVar := fRealVar;
-stStructVar.fLrealVar := fLrealVar;
-stStructVar.tTimeVar := tTimeVar;
-stStructVar.tdTimeOfDayVar := tdTimeOfDayVar;
-stStructVar.dDateVar := dDateVar;
-stStructVar.dtDateTimeVar := dtDateTimeVar;
-stStructVar.tLTimeVar := tLTimeVar;
-stStructVar.tdLTimeOfDayVar := tdLTimeOfDayVar;
-stStructVar.dLDateVar := dLDateVar;
-stStructVar.dtLDateTimeVar := dtLDateTimeVar;
-stStructVar.sStringVar := sStringVar;
-
-// Nested struct
-stStructVar.stSubStructVar.bBoolVar := bBoolVar;
-stStructVar.stSubStructVar.nSintVar := nSintVar;
-stStructVar.stSubStructVar.nUsintVar := nUsintVar;
-stStructVar.stSubStructVar.nByteVar := nByteVar;
-stStructVar.stSubStructVar.nIntVar := nIntVar;
-stStructVar.stSubStructVar.nUintVar := nUintVar;
-stStructVar.stSubStructVar.nWordVar := nWordVar;
-stStructVar.stSubStructVar.nDintVar := nDintVar;
-stStructVar.stSubStructVar.nUdintVar := nUdintVar;
-stStructVar.stSubStructVar.nDwordVar := nDwordVar;
-stStructVar.stSubStructVar.nLintVar := nLintVar;
-stStructVar.stSubStructVar.nUlintVar := nUlintVar;
-stStructVar.stSubStructVar.nLwordVar := nLwordVar;
-stStructVar.stSubStructVar.fRealVar := fRealVar;
-stStructVar.stSubStructVar.fLrealVar := fLrealVar;
-stStructVar.stSubStructVar.tTimeVar := tTimeVar;
-stStructVar.stSubStructVar.tdTimeOfDayVar := tdTimeOfDayVar;
-stStructVar.stSubStructVar.dDateVar := dDateVar;
-stStructVar.stSubStructVar.dtDateTimeVar := dtDateTimeVar;
-stStructVar.stSubStructVar.tLTimeVar := tLTimeVar;
-stStructVar.stSubStructVar.tdLTimeOfDayVar := tdLTimeOfDayVar;
-stStructVar.stSubStructVar.dLDateVar := dLDateVar;
-stStructVar.stSubStructVar.dtLDateTimeVar := dtLDateTimeVar;
-stStructVar.stSubStructVar.sStringVar := sStringVar;
-
-// -----------------------------------------------------------------------
-// Update 1-D arrays: element[i] = UDINT_TO_x(seed + i)
-// -----------------------------------------------------------------------
-FOR nLoopIndex1 := 0 TO 9 DO
-	aIntArray[nLoopIndex1] := UDINT_TO_INT(nSeed + DINT_TO_UDINT(nLoopIndex1));
+      <ST><![CDATA[// st1 -- offset seed, same shapes as arr1/arr2/arr3
+nSeedSt1 := nSeed + 1000000;
+FOR i := 0 TO 2 DO
+    FOR j := 0 TO 2 DO
+        st1.arr1[i,j] := DINT_TO_INT(UDINT_TO_DINT(nSeedSt1) + i*2 + j*3);
+    END_FOR
+END_FOR
+FOR i := 0 TO 1 DO
+    FOR j := 0 TO 1 DO
+        FOR k := 0 TO 1 DO
+            FOR l := 0 TO 1 DO
+                st1.arr2[i,j][k,l] := DINT_TO_INT(UDINT_TO_DINT(nSeedSt1) + i*2 + j*3 + k*5 + l*7);
+            END_FOR
+        END_FOR
+    END_FOR
+END_FOR
+FOR i := 0 TO 1 DO
+    FOR j := 0 TO 1 DO
+        FOR k := 0 TO 1 DO
+            FOR l := 0 TO 1 DO
+                st1.arr3[i,j,k][l] := DINT_TO_INT(UDINT_TO_DINT(nSeedSt1) + i*2 + j*3 + k*5 + l*7);
+            END_FOR
+        END_FOR
+    END_FOR
 END_FOR
 
-FOR nLoopIndex1 := -9 TO 9 DO
-	aDintArray[nLoopIndex1] := UDINT_TO_DINT(UDINT_TO_DINT(nSeed) + nLoopIndex1);
+// arr1 : ARRAY[0..2,0..2] OF INT
+FOR i := 0 TO 2 DO
+    FOR j := 0 TO 2 DO
+        arr1[i,j] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3);
+    END_FOR
 END_FOR
 
-// -----------------------------------------------------------------------
-// Update 2-D array: element[i,j] = UDINT_TO_INT(seed + i*3 + j)
-// -----------------------------------------------------------------------
-FOR nLoopIndex1 := 0 TO 2 DO
-	FOR nLoopIndex2 := 0 TO 2 DO
-		aIntArray2d[nLoopIndex1, nLoopIndex2] := UDINT_TO_INT(nSeed + DINT_TO_UDINT(nLoopIndex1) * 3 + nLoopIndex2);
-	END_FOR
+// arr2 : ARRAY[0..1,0..1] OF ARRAY[0..1,0..1] OF INT
+FOR i := 0 TO 1 DO
+    FOR j := 0 TO 1 DO
+        FOR k := 0 TO 1 DO
+            FOR l := 0 TO 1 DO
+                arr2[i,j][k,l] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
+            END_FOR
+        END_FOR
+    END_FOR
 END_FOR
 
-// -----------------------------------------------------------------------
-// Update struct array: 
-// -----------------------------------------------------------------------
-FOR nLoopIndex1 := 0 TO 9 DO
-	aStructVar[nLoopIndex1].bBoolVar := bBoolVar;
-	aStructVar[nLoopIndex1].nSintVar := nSintVar;
-	aStructVar[nLoopIndex1].nUsintVar := nUsintVar;
-	aStructVar[nLoopIndex1].nByteVar := nByteVar;
-	aStructVar[nLoopIndex1].nIntVar := nIntVar;
-	aStructVar[nLoopIndex1].nUintVar := nUintVar;
-	aStructVar[nLoopIndex1].nWordVar := nWordVar;
-	aStructVar[nLoopIndex1].nDintVar := nDintVar;
-	aStructVar[nLoopIndex1].nUdintVar := nUdintVar;
-	aStructVar[nLoopIndex1].nDwordVar := nDwordVar;
-	aStructVar[nLoopIndex1].nLintVar := nLintVar;
-	aStructVar[nLoopIndex1].nUlintVar := nUlintVar;
-	aStructVar[nLoopIndex1].nLwordVar := nLwordVar;
-	aStructVar[nLoopIndex1].fRealVar := fRealVar;
-	aStructVar[nLoopIndex1].fLrealVar := fLrealVar;
-	aStructVar[nLoopIndex1].tTimeVar := tTimeVar;
-	aStructVar[nLoopIndex1].tdTimeOfDayVar := tdTimeOfDayVar;
-	aStructVar[nLoopIndex1].dDateVar := dDateVar;
-	aStructVar[nLoopIndex1].dtDateTimeVar := dtDateTimeVar;
-	aStructVar[nLoopIndex1].tLTimeVar := tLTimeVar;
-	aStructVar[nLoopIndex1].tdLTimeOfDayVar := tdLTimeOfDayVar;
-	aStructVar[nLoopIndex1].dLDateVar := dLDateVar;
-	aStructVar[nLoopIndex1].dtLDateTimeVar := dtLDateTimeVar;
-	aStructVar[nLoopIndex1].sStringVar := sStringVar;
+// arr3 : ARRAY[0..1,0..1,0..1] OF ARRAY[0..1] OF INT
+FOR i := 0 TO 1 DO
+    FOR j := 0 TO 1 DO
+        FOR k := 0 TO 1 DO
+            FOR l := 0 TO 1 DO
+                arr3[i,j,k][l] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
+            END_FOR
+        END_FOR
+    END_FOR
+END_FOR
+
+// arr4 : ARRAY[5..5] OF ARRAY[0..9] OF INT (degenerate outer dim)
+FOR i := 5 TO 5 DO
+    FOR j := 0 TO 9 DO
+        arr4[i][j] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3);
+    END_FOR
+END_FOR
+
+// arr5 : ARRAY[-5..5,-3..3] OF ARRAY[-9..-1] OF INT (negative bounds, multi-dim + chained)
+FOR i := -5 TO 5 DO
+    FOR j := -3 TO 3 DO
+        FOR k := -9 TO -1 DO
+            arr5[i,j][k] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5);
+        END_FOR
+    END_FOR
+END_FOR
+
+// arr6 : ARRAY[0..2,0..2] OF E_ArrayEnum
+FOR i := 0 TO 2 DO
+    FOR j := 0 TO 2 DO
+        nScratch := nSeed + DINT_TO_UDINT(i)*2 + DINT_TO_UDINT(j)*3;
+        CASE nScratch MOD 4 OF
+			1: arr6[i,j] := E_ArrayEnum.Member2;
+			2: arr6[i,j] := E_ArrayEnum.Member3;
+			3: arr6[i,j] := E_ArrayEnum.Member4;
+		ELSE
+			arr6[i,j] := E_ArrayEnum.Member1;
+		END_CASE
+    END_FOR
+END_FOR
+
+// arr7 : ARRAY[0..2,0..2] OF ST_ArrayBits (64-bit pattern, bulk copy)
+FOR i := 0 TO 2 DO
+    FOR j := 0 TO 2 DO
+        nScratch64 := UDINT_TO_ULINT(nSeed) + DINT_TO_ULINT(i)*2 + DINT_TO_ULINT(j)*3;
+        MEMCPY(ADR(arr7[i,j]), ADR(nScratch64), SIZEOF(arr7[i,j]));
+    END_FOR
+END_FOR
+
+// arr8 : 4 single-dim links chained
+FOR i := 0 TO 1 DO
+    FOR j := 0 TO 1 DO
+        FOR k := 0 TO 1 DO
+            FOR l := 0 TO 1 DO
+                arr8[i][j][k][l] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7);
+            END_FOR
+        END_FOR
+    END_FOR
+END_FOR
+
+// arr9 : 4 chained 2-D links (8 indices)
+FOR i := 0 TO 1 DO
+ FOR j := 0 TO 1 DO
+  FOR k := 0 TO 1 DO
+   FOR l := 0 TO 1 DO
+    FOR m := 0 TO 1 DO
+     FOR n := 0 TO 1 DO
+      FOR o := 0 TO 1 DO
+       FOR p := 0 TO 1 DO
+        arr9[i,j][k,l][m,n][o,p] := DINT_TO_INT(UDINT_TO_DINT(nSeed) + i*2 + j*3 + k*5 + l*7 + m*11 + n*13 + o*17 + p*19);
+       END_FOR
+      END_FOR
+     END_FOR
+    END_FOR
+   END_FOR
+  END_FOR
+ END_FOR
 END_FOR]]></ST>
     </Implementation>
     <Method Name="FB_Init" Id="{fc026e65-e5f8-4ce3-a497-971dd1cce40d}">

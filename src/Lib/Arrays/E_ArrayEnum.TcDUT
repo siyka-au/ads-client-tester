@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <DUT Name="E_ArrayEnum" Id="{769886b7-f2e5-4044-b868-618c2e8722d8}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_ArrayEnum :
+(
+	Member1 := 0,
+	Member2,
+	Member3,
+	Member4
+);
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

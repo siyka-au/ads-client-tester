@@ -21,7 +21,16 @@
     <Description>This project provides a series of programs and symbols to allow integration testing of ADS clients by utilising deterministic outputs on symbols based on writeable inputs (such as nSeed).</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Lib\Arrays\E_ArrayEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Lib\Arrays\FB_ArrayTest.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lib\Arrays\ST_Array.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lib\Arrays\ST_ArrayBits.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Lib\Attributes\FB_AttributeTest.TcPOU">
@@ -191,7 +200,10 @@
               <d n="Values" t="Hashtable" />
             </o>
           </d>
-          <d n="Values" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>PerformStaticAnalyse</v>
+            <v>False</v>
+          </d>
         </o>
         <v>{40450F57-0AA3-4216-96F3-5444ECB29763}</v>
         <o>

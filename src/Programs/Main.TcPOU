@@ -13,6 +13,7 @@ VAR
 	fbStructTest : FB_StructPackingTest(nSeed := nSeed);
 	fbEnumTest : FB_EnumTest(nSeed := nSeed);
 	fbBitPackingTest : FB_BitPackingTest(nSeed := nSeed);
+	fbArrayTest : FB_ArrayTest(nSeed := nSeed);
 	fbWriteTest : FB_WriteTest;
 	
 	fbGvlTest : FB_GvlTest(nSeed := nSeed);
@@ -26,6 +27,7 @@ fbStringTest();
 fbStructTest();
 fbEnumTest();
 fbBitPackingTest();
+fbArrayTest();
 fbWriteTest();
 
 fbGvlTest();

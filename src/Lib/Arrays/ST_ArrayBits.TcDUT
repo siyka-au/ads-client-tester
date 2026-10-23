@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <DUT Name="ST_ArrayBits" Id="{d2a18567-075e-4597-b7ae-982eba6fe643}">
+    <Declaration><![CDATA[TYPE ST_ArrayBits :
+STRUCT
+	bBit0 : BIT;
+	bBit1 : BIT;
+	bBit2 : BIT;
+	bBit3 : BIT;
+	bBit4 : BIT;
+	bBit5 : BIT;
+	bBit6 : BIT;
+	bBit7 : BIT;
+	bBit8 : BIT;
+	bBit9 : BIT;
+	bBit10 : BIT;
+	bBit11 : BIT;
+	bBit12 : BIT;
+	bBit13 : BIT;
+	bBit14 : BIT;
+	bBit15 : BIT;
+	bBit16 : BIT;
+	bBit17 : BIT;
+	bBit18 : BIT;
+	bBit19 : BIT;
+	bBit20 : BIT;
+	bBit21 : BIT;
+	bBit22 : BIT;
+	bBit23 : BIT;
+	bBit24 : BIT;
+	bBit25 : BIT;
+	bBit26 : BIT;
+	bBit27 : BIT;
+	bBit28 : BIT;
+	bBit29 : BIT;
+	bBit30 : BIT;
+	bBit31 : BIT;
+	bBit32 : BIT;
+	bBit33 : BIT;
+	bBit34 : BIT;
+	bBit35 : BIT;
+	bBit36 : BIT;
+	bBit37 : BIT;
+	bBit38 : BIT;
+	bBit39 : BIT;
+	bBit40 : BIT;
+	bBit41 : BIT;
+	bBit42 : BIT;
+	bBit43 : BIT;
+	bBit44 : BIT;
+	bBit45 : BIT;
+	bBit46 : BIT;
+	bBit47 : BIT;
+	bBit48 : BIT;
+	bBit49 : BIT;
+	bBit50 : BIT;
+	bBit51 : BIT;
+	bBit52 : BIT;
+	bBit53 : BIT;
+	bBit54 : BIT;
+	bBit55 : BIT;
+	bBit56 : BIT;
+	bBit57 : BIT;
+	bBit58 : BIT;
+	bBit59 : BIT;
+	bBit60 : BIT;
+	bBit61 : BIT;
+	bBit62 : BIT;
+	bBit63 : BIT;
+END_STRUCT
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>
